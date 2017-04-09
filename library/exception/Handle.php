@@ -17,7 +17,7 @@ class Handle extends \think\exception\Handle
      */
     public function convertExceptionToResponse(Exception $e)
     {
-        if (Config::get('app_debug') === false) {
+        if (! Config::get('app_debug')) {
             
             // 清空输出缓存
             ob_clean();
