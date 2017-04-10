@@ -47,6 +47,34 @@ class Crypt
     private $blockSize;
 
     /**
+     * ofb模式
+     *
+     * @var string
+     */
+    const MODE_OFB = MCRYPT_MODE_OFB;
+
+    /**
+     * cfb模式
+     *
+     * @var string
+     */
+    const MODE_CFB = MCRYPT_MODE_CFB;
+
+    /**
+     * ecb模式
+     *
+     * @var string
+     */
+    const MODE_ECB = MCRYPT_MODE_ECB;
+
+    /**
+     * cbc模式
+     *
+     * @var string
+     */
+    const MODE_CBC = MCRYPT_MODE_CBC;
+
+    /**
      * base64编码
      *
      * @var unknown
@@ -75,14 +103,28 @@ class Crypt
     const CODE_URL = 'url';
 
     /**
+     * 构造函数
+     *
+     * @param array $option            
+     *
+     * @return void
+     */
+    public function __construct($option = [])
+    {
+        $this->init($option);
+    }
+
+    /**
      * 初始化
      *
      * @return void
      */
-    protected function _initialize()
+    public function init($option)
     {
+        $this->_option = $option;
+        
         // 算法
-        $this->key = $this->option('key');
+        $this->key = $this->getOption('key');
         switch (strlen($this->key)) {
             case 8:
                 $this->mcrypt = MCRYPT_DES;
@@ -93,37 +135,29 @@ class Crypt
             case 32:
                 $this->mcrypt = MCRYPT_RIJNDAEL_256;
                 break;
+            default:
+                throw new \Exception('密钥的长度不合法');
         }
         
         // 模式
-        $this->mode = $this->option('mode');
-        switch (strtolower($this->mode)) {
-            case 'ofb':
-                $this->mode = MCRYPT_MODE_OFB;
+        $this->mode = strtolower($this->getOption('mode'));
+        switch ($this->mode) {
+            case self::MODE_OFB:
+            case self::MODE_CFB:
+            case self::MODE_ECB:
+            case self::MODE_CBC:
                 break;
-            case 'cfb':
-                $this->mode = MCRYPT_MODE_CFB;
-                break;
-            case 'ecb':
-                $this->mode = MCRYPT_MODE_ECB;
-                break;
-            case 'cbc':
             default:
                 $this->mode = MCRYPT_MODE_CBC;
         }
         
         // 向量
-        $this->iv = base64_decode($this->option('iv'));
-    }
-
-    /**
-     * 构造向量
-     *
-     * @return string
-     */
-    public function generateIv()
-    {
-        return base64_encode(mcrypt_create_iv(mcrypt_get_block_size($this->mcrypt, $this->mode), MCRYPT_DEV_RANDOM));
+        $this->iv = $this->getOption('iv');
+        
+        // 密钥和向量长度验证
+        if (strlen($this->key) != strlen($this->iv)) {
+            throw new \Exception('密钥和向量的长度不一致');
+        }
     }
 
     /**
