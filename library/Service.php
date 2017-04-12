@@ -3,7 +3,7 @@ namespace cms;
 
 use cms\traits\InstanceTrait;
 
-class Logic
+class Service
 {
     /**
      * 实例Trait

@@ -13,6 +13,22 @@ class Response
     use InstanceTrait;
 
     /**
+     * API返回
+     *
+     * @param integer $code            
+     * @param string $msg            
+     * @param mixed $data            
+     */
+    public function api($code, $msg = '', $data = '')
+    {
+        $this->json([
+            'code' => $code,
+            'msg' => $msg,
+            'data' => $data
+        ]);
+    }
+
+    /**
      * 返回跳转
      *
      * @param array $url            
