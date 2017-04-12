@@ -20,9 +20,11 @@ class CheckboxForm extends Form
         $html .= '<div class="am-u-sm-' . $data['l_sm_num'] . ' am-u-md-' . $data['l_md_num'] . ' am-text-right ' . $data['l_class'] . '" style="' . $data['l_style'] . '" ' . $data['l_attr'] . '>' . $data['title'] . '</div>';
         $html .= '<div class="am-u-sm-' . $data['r_sm_num'] . ' am-u-md-' . $data['r_md_num'] . ' am-u-end ' . $data['r_class'] . '" style="' . $data['r_style'] . '" ' . $data['l_attr'] . '>';
         $class = $data['inline'] ? 'am-checkbox-inline' : 'am-checkbox';
+        
+        $values = is_array($data['value']) ? $data['value'] : explode(',', $data['value']);
         foreach ($data['list'] as $vo) {
             $html .= '<label class="' . $class . ' am-secondary">';
-            if ($data['value'] === $vo['value']) {
+            if (in_array($vo['value'], $values)) {
                 $html .= '<input checked type="checkbox" name="' . $data['name'] . '" value="' . $vo['value'] . '" data-am-ucheck /> ' . $vo['name'];
             } else {
                 $html .= '<input type="checkbox" name="' . $data['name'] . '" value="' . $vo['value'] . '" data-am-ucheck /> ' . $vo['name'];
