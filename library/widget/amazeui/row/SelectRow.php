@@ -16,7 +16,7 @@ class SelectRow extends Row
     {
         $data = array_merge(self::$row, $data);
         
-        $html = '<select name="' . $data['name'] . '" class="nd-input" url=' . $data['url'] . ' data-am-selected="{btnSize: \'sm\'}">';
+        $html = '<select name="' . $data['name'] . '" class="nd-input" url=' . $data['url'] . ' data-am-selected="{btnSize: \'sm\', searchBox: 1, maxHeight: 300}">';
         foreach ($data['list'] as $vo) {
             if ($data['value'] === $vo['value']) {
                 $html .= '<option selected value="' . $vo['value'] . '">' . $vo['name'] . '</option>';

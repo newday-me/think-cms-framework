@@ -45,7 +45,7 @@ class RemoteFile extends StreamFile
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         
         // HTTPS
-        if (strpos($url, 'https://') !== false) {
+        if (strpos($url, 'https: // ') !== false) {
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         }

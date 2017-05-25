@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "topthink/framework": "~5.0.7",
+        "topthink/framework": "5.0.9",
         "topthink/think-captcha": "~1.0.7",
         "topthink/think-migration": "~1.1.0",
         "topthink/think-image": "~1.0.7",

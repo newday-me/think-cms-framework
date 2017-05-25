@@ -18,7 +18,7 @@ class SelectSearch extends Search
         
         $html = '<div class="am-u-sm-' . $data['sm_num'] . ' am-u-md-' . $data['md_num'] . ' am-u-end">';
         $html .= '<div class="am-form-group">';
-        $html .= '<select name="' . $data['name'] . '" class="nd-search-field" data-am-selected="{btnSize: \'sm\'}">';
+        $html .= '<select name="' . $data['name'] . '" class="nd-search-field" data-am-selected="{btnSize: \'sm\', searchBox: 1, maxHeight: 300}">';
         if ($data['all']) {
             $html .= '<option value="**">不限</option>';
         }
