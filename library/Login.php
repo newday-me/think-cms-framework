@@ -1,4 +1,5 @@
 <?php
+
 namespace cms;
 
 use cms\traits\OptionTrait;
@@ -7,12 +8,12 @@ use cms\interfaces\LoginInterface;
 
 abstract class Login implements LoginInterface
 {
-    
+
     /**
      * 实例Trait
      */
     use InstanceTrait;
-    
+
     /**
      * 配置Trait
      */
@@ -21,14 +22,14 @@ abstract class Login implements LoginInterface
     /**
      * 前缀
      *
-     * @var unknown
+     * @var string
      */
     protected $prefix = 'login_';
 
     /**
      * 设置前缀
      *
-     * @param unknown $prefix            
+     * @param string $prefix
      */
     public function setPrefix($prefix)
     {
@@ -39,7 +40,8 @@ abstract class Login implements LoginInterface
      * 获取存储key
      *
      *
-     * @param unknown $key            
+     * @param string $key
+     * @return string
      */
     protected function getStorageKey($key)
     {

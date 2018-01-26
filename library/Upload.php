@@ -1,4 +1,5 @@
 <?php
+
 namespace cms;
 
 use cms\traits\LogTrait;
@@ -12,17 +13,17 @@ use cms\interfaces\FileValidateInterface;
 
 class Upload implements UploadInterface
 {
-    
+
     /**
      * 配置Trait
      */
     use OptionTrait;
-    
+
     /**
      * 日志Trait
      */
     use LogTrait;
-    
+
     /**
      * 钩子Trait
      */
@@ -31,14 +32,14 @@ class Upload implements UploadInterface
     /**
      * 上传验证钩子
      *
-     * @var unknown
+     * @var string
      */
     const HOOK_UPLOAD_CHECK = 'upload_check';
 
     /**
      * 上传成功钩子
      *
-     * @var unknown
+     * @var string
      */
     const HOOK_UPLOAD_SUCCESS = 'upload_success';
 
@@ -52,34 +53,33 @@ class Upload implements UploadInterface
     /**
      * 文件验证
      *
-     * @var unknown
+     * @var array
      */
     protected $_validates;
 
     /**
      * 文件处理
      *
-     * @var unknown
+     * @var array
      */
     protected $_processors;
 
     /**
      * 路径格式
      *
-     * @var unknown
+     * @var string
      */
     protected $_pathFormat = '{ext}/{hash}.{ext}';
 
     /**
      * 构造函数
      *
-     * @param StorageInterface $storage            
-     * @return void
+     * @param StorageInterface $storage
      */
     public function __construct(StorageInterface $storage = null)
     {
         is_null($storage) || $this->_storage = $storage;
-        
+
         // 重设上传
         $this->resetUpload();
     }
@@ -98,17 +98,17 @@ class Upload implements UploadInterface
             $this->logError('未设置存储对象');
             throw new \Exception('请先设置存储对象');
         }
-        
+
         // 处理
         foreach ($this->_processors as $processor) {
             $processor->process($file);
         }
-        
+
         // 验证
         foreach ($this->_validates as $validate) {
             $validate->validate($file);
         }
-        
+
         // 文件信息
         $info = [
             'url' => '',
@@ -119,7 +119,7 @@ class Upload implements UploadInterface
             'mime' => $file->getMime(),
             'ext' => $file->getExtension()
         ];
-        
+
         // 保存路径
         if (is_null($path)) {
             $vars = [
@@ -136,31 +136,29 @@ class Upload implements UploadInterface
             $path = $storage->getOption('dir') . str_replace(array_keys($vars), array_values($vars), $this->_pathFormat);
         }
         $info['path'] = $path;
-        
+
         // 上传验证钩子
         $this->callHook(self::HOOK_UPLOAD_CHECK, $info);
-        
+
         // 保存文件
         if (empty($info['url']) || $overwrite) {
             $storage->exists($path) || $storage->save($file, $storage->getOption('root') . $path);
             $info['url'] = $storage->url($path);
         }
-        
+
         // 上传成功钩子
         $this->callHook(self::HOOK_UPLOAD_SUCCESS, $info);
-        
+
         // 重设上传
         $this->resetUpload();
-        
+
         return $info;
     }
 
     /**
      * 设置路径格式
      *
-     * @param string $format            
-     *
-     * @return string
+     * @param string $format
      */
     public function setPathFormat($format)
     {
@@ -184,7 +182,7 @@ class Upload implements UploadInterface
      *
      * @see UploadInterface::addProcesser()
      */
-    public function addProcesser(FileProcessInterface $processor)
+    public function addProcessor(FileProcessInterface $processor)
     {
         $this->_processors[] = $processor;
     }
@@ -192,7 +190,7 @@ class Upload implements UploadInterface
     /**
      * 设置存储对象
      *
-     * @param StorageInterface $storage            
+     * @param StorageInterface $storage
      * @return void
      */
     public function setStorage(StorageInterface $storage)
@@ -218,7 +216,7 @@ class Upload implements UploadInterface
     public function resetUpload()
     {
         $this->resetValidate();
-        $this->resetProcesser();
+        $this->resetProcessor();
     }
 
     /**
@@ -236,7 +234,7 @@ class Upload implements UploadInterface
      *
      * @return void
      */
-    protected function resetProcesser()
+    protected function resetProcessor()
     {
         $this->_processors = [];
     }

@@ -1,4 +1,5 @@
 <?php
+
 namespace cms\interfaces;
 
 interface UploadInterface
@@ -7,9 +8,9 @@ interface UploadInterface
     /**
      * 上传文件
      *
-     * @param FileInterface $file            
-     * @param string $path            
-     * @param boolean $overwrite            
+     * @param FileInterface $file
+     * @param string $path
+     * @param boolean $overwrite
      *
      * @throws \Exception
      * @return array($url, $info)
@@ -19,7 +20,7 @@ interface UploadInterface
     /**
      * 添加文件验证
      *
-     * @param FileValidateInterface $validate            
+     * @param FileValidateInterface $validate
      *
      * @return void
      */
@@ -28,10 +29,10 @@ interface UploadInterface
     /**
      * 添加文件处理
      *
-     * @param FileProcessInterface $processor            
+     * @param FileProcessInterface $processor
      *
      * @return void
      */
-    public function addProcesser(FileProcessInterface $processor);
+    public function addProcessor(FileProcessInterface $processor);
 
 }
