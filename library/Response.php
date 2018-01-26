@@ -1,9 +1,10 @@
 <?php
+
 namespace cms;
 
-use think\Url;
+use think\facade\Url;
 use think\exception\HttpResponseException;
-use cms\traits\InstanceTrait;
+use cms\core\traits\InstanceTrait;
 
 class Response
 {
@@ -15,26 +16,28 @@ class Response
     /**
      * API返回
      *
-     * @param integer $code            
-     * @param string $msg            
-     * @param mixed $data            
+     * @param integer $code
+     * @param string $msg
+     * @param mixed $data
+     * @param array $header
+     * @param array $options
      */
-    public function api($code, $msg = '', $data = '')
+    public function api($code, $msg = '', $data = '', $header = [], $options = [])
     {
         $this->json([
             'code' => $code,
             'msg' => $msg,
             'data' => $data
-        ]);
+        ], $header, $options);
     }
 
     /**
      * 返回跳转
      *
-     * @param array $url            
-     * @param boolean $build            
-     * @param array $header            
-     * @param array $options            
+     * @param string $url
+     * @param bool $build
+     * @param array $header
+     * @param array $options
      * @return void
      */
     public function redirect($url, $build = true, $header = [], $options = [])
@@ -46,9 +49,9 @@ class Response
     /**
      * 返回Xml
      *
-     * @param string $xml            
-     * @param array $header            
-     * @param array $options            
+     * @param string $xml
+     * @param array $header
+     * @param array $options
      * @return void
      */
     public function xml($xml, $header = [], $options = [])
@@ -59,9 +62,9 @@ class Response
     /**
      * 返回Json
      *
-     * @param array $json            
-     * @param array $header            
-     * @param array $options            
+     * @param array $json
+     * @param array $header
+     * @param array $options
      * @return void
      */
     public function json($json, $header = [], $options = [])
@@ -72,10 +75,11 @@ class Response
     /**
      * 返回结果
      *
-     * @param mixed $data            
-     * @param string $type            
-     * @param array $header            
-     * @param array $options            
+     * @param mixed $data
+     * @param string $type
+     * @param int $code
+     * @param array $header
+     * @param array $options
      * @return void
      */
     public function data($data, $type = 'auto', $code = 200, $header = [], $options = [])
@@ -88,7 +92,7 @@ class Response
     /**
      * 构造Url
      *
-     * @param string $url            
+     * @param string $url
      * @return string
      */
     protected function buildUrl($url)

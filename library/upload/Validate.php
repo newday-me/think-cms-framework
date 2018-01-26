@@ -1,8 +1,9 @@
 <?php
+
 namespace cms\upload;
 
-use cms\traits\OptionTrait;
-use cms\interfaces\FileValidateInterface;
+use cms\core\traits\OptionTrait;
+use cms\core\interfaces\FileValidateInterface;
 
 abstract class Validate implements FileValidateInterface
 {
@@ -14,9 +15,7 @@ abstract class Validate implements FileValidateInterface
     /**
      * 构造函数
      *
-     * @param array $option            
-     *
-     * @return void
+     * @param array $option
      */
     public function __construct($option = [])
     {

@@ -2,14 +2,14 @@
 
 namespace cms;
 
-use cms\traits\LogTrait;
-use cms\traits\OptionTrait;
-use cms\traits\HookTrait;
-use cms\interfaces\UploadInterface;
-use cms\interfaces\StorageInterface;
-use cms\interfaces\FileInterface;
-use cms\interfaces\FileProcessInterface;
-use cms\interfaces\FileValidateInterface;
+use cms\core\traits\OptionTrait;
+use cms\core\traits\HookTrait;
+use cms\core\interfaces\FileInterface;
+use cms\core\interfaces\FileProcessInterface;
+use cms\core\interfaces\FileValidateInterface;
+use cms\core\interfaces\StorageInterface;
+use cms\core\interfaces\UploadInterface;
+use cms\core\exception\UploadException;
 
 class Upload implements UploadInterface
 {
@@ -18,11 +18,6 @@ class Upload implements UploadInterface
      * 配置Trait
      */
     use OptionTrait;
-
-    /**
-     * 日志Trait
-     */
-    use LogTrait;
 
     /**
      * 钩子Trait
@@ -48,41 +43,28 @@ class Upload implements UploadInterface
      *
      * @var StorageInterface
      */
-    protected $_storage;
+    protected $storage;
 
     /**
      * 文件验证
      *
      * @var array
      */
-    protected $_validates;
+    protected $validates = [];
 
     /**
      * 文件处理
      *
      * @var array
      */
-    protected $_processors;
+    protected $processes = [];
 
     /**
      * 路径格式
      *
      * @var string
      */
-    protected $_pathFormat = '{ext}/{hash}.{ext}';
-
-    /**
-     * 构造函数
-     *
-     * @param StorageInterface $storage
-     */
-    public function __construct(StorageInterface $storage = null)
-    {
-        is_null($storage) || $this->_storage = $storage;
-
-        // 重设上传
-        $this->resetUpload();
-    }
+    protected $pathFormat = '{ext}/{hash}.{ext}';
 
     /**
      *
@@ -95,17 +77,16 @@ class Upload implements UploadInterface
         // 存储
         $storage = $this->getStorage();
         if (is_null($storage)) {
-            $this->logError('未设置存储对象');
-            throw new \Exception('请先设置存储对象');
+            throw new UploadException('请先设置存储对象');
         }
 
         // 处理
-        foreach ($this->_processors as $processor) {
+        foreach ($this->processes as $processor) {
             $processor->process($file);
         }
 
         // 验证
-        foreach ($this->_validates as $validate) {
+        foreach ($this->validates as $validate) {
             $validate->validate($file);
         }
 
@@ -133,7 +114,7 @@ class Upload implements UploadInterface
             foreach ($info as $key => $value) {
                 $vars['{' . $key . '}'] = $value;
             }
-            $path = $storage->getOption('dir') . str_replace(array_keys($vars), array_values($vars), $this->_pathFormat);
+            $path = $this->getOption('dir') . str_replace(array_keys($vars), array_values($vars), $this->pathFormat);
         }
         $info['path'] = $path;
 
@@ -142,7 +123,7 @@ class Upload implements UploadInterface
 
         // 保存文件
         if (empty($info['url']) || $overwrite) {
-            $storage->exists($path) || $storage->save($file, $storage->getOption('root') . $path);
+            $storage->exists($path) || $storage->save($file, $path);
             $info['url'] = $storage->url($path);
         }
 
@@ -162,7 +143,7 @@ class Upload implements UploadInterface
      */
     public function setPathFormat($format)
     {
-        $this->_pathFormat = $format;
+        $this->pathFormat = $format;
     }
 
     /**
@@ -173,7 +154,7 @@ class Upload implements UploadInterface
      */
     public function addValidate(FileValidateInterface $validate)
     {
-        $this->_validates[] = $validate;
+        $this->validates[] = $validate;
     }
 
     /**
@@ -182,9 +163,9 @@ class Upload implements UploadInterface
      *
      * @see UploadInterface::addProcesser()
      */
-    public function addProcessor(FileProcessInterface $processor)
+    public function addProcess(FileProcessInterface $process)
     {
-        $this->_processors[] = $processor;
+        $this->processes[] = $process;
     }
 
     /**
@@ -195,7 +176,7 @@ class Upload implements UploadInterface
      */
     public function setStorage(StorageInterface $storage)
     {
-        $this->_storage = $storage;
+        $this->storage = $storage;
     }
 
     /**
@@ -205,7 +186,7 @@ class Upload implements UploadInterface
      */
     public function getStorage()
     {
-        return $this->_storage;
+        return $this->storage;
     }
 
     /**
@@ -216,7 +197,7 @@ class Upload implements UploadInterface
     public function resetUpload()
     {
         $this->resetValidate();
-        $this->resetProcessor();
+        $this->resetProcess();
     }
 
     /**
@@ -226,7 +207,7 @@ class Upload implements UploadInterface
      */
     protected function resetValidate()
     {
-        $this->_validates = [];
+        $this->validates = [];
     }
 
     /**
@@ -234,8 +215,8 @@ class Upload implements UploadInterface
      *
      * @return void
      */
-    protected function resetProcessor()
+    protected function resetProcess()
     {
-        $this->_processors = [];
+        $this->processes = [];
     }
 }

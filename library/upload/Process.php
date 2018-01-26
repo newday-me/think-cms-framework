@@ -1,8 +1,9 @@
 <?php
+
 namespace cms\upload;
 
-use cms\traits\OptionTrait;
-use cms\interfaces\FileProcessInterface;
+use cms\core\traits\OptionTrait;
+use cms\core\interfaces\FileProcessInterface;
 
 abstract class Process implements FileProcessInterface
 {
@@ -14,9 +15,7 @@ abstract class Process implements FileProcessInterface
     /**
      * 构造函数
      *
-     * @param array $option            
-     *
-     * @return void
+     * @param array $option
      */
     public function __construct($option = [])
     {
